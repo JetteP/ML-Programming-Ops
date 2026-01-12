@@ -146,7 +146,7 @@ When I first tested the connection, I got a host authenticity warning for github
 
 ## Question 7: The Data Pipeline
 1. **Implementation:** 
-    ![implementatie ss](asssets/vraag_7_1.png)
+    ![implementatie ss](assets/vraag_7_2_tweede.png)
 2. **Local Pytest:** 
     I had to rerun this command in my terminal cause I saw the question asked for a screenshot and then got a warning. 
     All tests passed successfully (2 passed in 5.83s), as shown in the screenshot above. This confirms that my implementation of the PCAMDataset, including lazy HDF5 loading, numerical clipping, tensor conversion, and batching behaviour, functions as expected.
