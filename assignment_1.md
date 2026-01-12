@@ -102,7 +102,7 @@ When I first tested the connection, I got a host authenticity warning for github
      Another approach is to copy the dataset to local storage on the compute node (such as `$TMPDIR`) at the start of the job. Local disks are much better at handling random access to small files. By working from local storage instead of GPFS during training, the pressure on the shared filesystem is reduced and performance improves significantly.
 
    - **Dataset Versioning:**  
-     Large datasets cannot realistically be version controlled with Git. Pushing gigabytes or petabytes of data would break both Git and common workflows. Instead, tools like DVC are used. DVC keeps track of dataset versions using hashes and metadata that *are* stored in Git, while the actual data lives elsewhere (for example on the cluster or in cloud storage). This makes it possible to reproduce experiments exactly, without ever committing the raw data itself.
+     Large datasets cannot realistically be version controlled with Git. Pushing gigabytes or petabytes of data would break both Git and common workflows. Instead, tools like DVC are used. DVC keeps track of dataset versions using hashes and metadata that are stored in Git, while the actual data lives elsewhere (for example on the cluster or in cloud storage). This makes it possible to reproduce experiments exactly, without ever committing the raw data itself.
 2. **Reproducibility:**  
    Even if my teammate runs the exact same code, they could still end up with different results. I believe three common causes are:
    - **Library versions:** A slightly different version of PyTorch or NumPy can change behaviour in subtle ways. Proper MLOps practice means fixing dependency versions so everyone runs in the same environment.
@@ -197,7 +197,7 @@ tests/test_mlp.py ..                                                            
 
 ## Question 9: Training Loop & Loss Visualization
 1. **Training Execution:**  
-    I trained the model by submitting a Slurm batch job to the gpu_a100 partition (this is the partition where the GPUs actually live (also I realised later I shouldnt have used the gpu_a100 partition, my sincere appologies once again). I trained for 3 epochs, and the job ran on compute node:
+    I trained the model by submitting a Slurm batch job to the gpu_a100 partition (this is the partition where the GPUs actually live (also I realised later I shouldnt have used the gpu_a100 partition, my sincere appologies once again)). I trained for 3 epochs, and the job ran on compute node:
 
     Node: gcn26
     Confirmed in the job output header:
@@ -250,7 +250,7 @@ tests/test_mlp.py ..                                                            
     4. Small validation increase at epoch 3 is not alarming.
     With such a short run, this could be due to sampling noise, the simplicity of the MLP architecture, or the inherent difficulty of histopathology images. With more epochs, a clearer trend would likely emerge.
 
-    For the purpose of this assignment — verifying the training loop and tracking learning curves — this behaviour is exactly what I would expect.
+    For the purpose of this assignment, verifying the training loop and tracking learning curves, this behaviour is exactly what I would expect.
 
 3. **Most Frustrating Error:**
     So I actually had A LOT of issues with this question so I will explain everything in full:
