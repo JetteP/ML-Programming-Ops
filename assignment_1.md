@@ -44,7 +44,7 @@ Example including an image:
 
 2. **Pip Install Torch:**
    - **Duration:** 10 minutes
-   - **Warnings:** Yes, at the very end of the installation, I received a yellow notice regarding the pip version: [notice] A new release of pip is available: 24.3.1 -> 25.3 [notice] To update, run: pip install --upgrade pip I also observed several Requirement already satisfied messages for packages like numpy and Pillow, which were already present in the Snellius 2025 module stack I loaded.
+   - **Warnings:** Yes, at the very end of the installation, I received a yellow notice regarding the pip version: `[notice] A new release of pip is available: 24.3.1 -> 25.3 [notice] To update, run: pip install --upgrade pip` I also observed several Requirement already satisfied messages for packages like numpy and Pillow, which were already present in the Snellius 2025 module stack I loaded.
 
    - **Venv Size:** `du -sh /home/scur2397/mlops_env gave -> 5.2G`
 
@@ -104,7 +104,7 @@ When I first tested the connection, I got a host authenticity warning for github
    - **Dataset Versioning:**  
      Large datasets cannot realistically be version controlled with Git. Pushing gigabytes or petabytes of data would break both Git and common workflows. Instead, tools like DVC are used. DVC keeps track of dataset versions using hashes and metadata that *are* stored in Git, while the actual data lives elsewhere (for example on the cluster or in cloud storage). This makes it possible to reproduce experiments exactly, without ever committing the raw data itself.
 2. **Reproducibility:**  
-   Even if my teammate runs the exact same code, they could still end up with different results. From my experience, three common causes are:
+   Even if my teammate runs the exact same code, they could still end up with different results. I believe three common causes are:
    - **Library versions:** A slightly different version of PyTorch or NumPy can change behaviour in subtle ways. Proper MLOps practice means fixing dependency versions so everyone runs in the same environment.
    - **Randomness:** Neural networks rely heavily on randomness, for example in weight initialisation and data shuffling. If seeds are not explicitly set, results will vary between runs. Setting fixed random seeds helps make experiments reproducible.
    - **Hardware differences:** Different GPUs or system architectures can lead to small numerical differences due to floating-point behaviour. Using containers or clearly defined environments reduces these differences and makes results easier to reproduce.
@@ -140,7 +140,8 @@ When I first tested the connection, I got a host authenticity warning for github
     tests/test_imports.py .                                              [100%]
 
     =============================== 1 passed in 5.13s ===============================
-    This confirmed that the package structure was recognised correctly and that all required imports were working as intended.
+   
+   This confirmed that the package structure was recognised correctly and that all required imports were working as intended.
 
 ---
 
@@ -149,7 +150,7 @@ When I first tested the connection, I got a host authenticity warning for github
     ![implementatie ss](assets/vraag_7_2_tweede.png)
 2. **Local Pytest:** 
     I had to rerun this command in my terminal cause I saw the question asked for a screenshot and then got a warning. 
-    All tests passed successfully (2 passed in 5.83s), as shown in the screenshot above. This confirms that my implementation of the PCAMDataset, including lazy HDF5 loading, numerical clipping, tensor conversion, and batching behaviour, functions as expected.
+    All tests passed successfully (2 passed in 5.83s), as shown in the screenshot above. This confirms that my implementation of the PCAMDataset, including numerical clipping, tensor conversion, and batching behaviour, functions as expected.
 
     During the test run, I received a warning related to the pin_memory argument. This warning occurs because the tests were executed on a login/CPU node without a GPU attached. This is expected behaviour on Snellius and does not affect correctness or training performance when running on GPU compute nodes. No tests failed, and the pipeline behaves correctly in the intended training environment.
     ![warning ss](assets/vraag_7_2_eerste.png)
@@ -174,27 +175,29 @@ When I first tested the connection, I got a host authenticity warning for github
 
 ## Question 8: Model Implementation (MLP)
 1. **Forward Pass:**  
-   I actually ran into a NotImplementedError when I first ran the tests because my MLP class was missing the forward function. I also got a ValueError saying the optimizer had an empty parameter list because I hadn't defined any layers yet. To fix it, I implemented the __init__ with the correct input dimension. Since the PCAM images are 96 x 96 with 3 channels, I calculated 96 x 96 x 3 = 27,648 as the input size. I used nn.Flatten() to make sure the image fits into the first linear layer, and once I added the forward method to pass the data through self.layers, the tests passed perfectly.
+   I actually ran into a `NotImplementedError` when I first ran the tests because my MLP class was missing the forward function. I also got a `ValueError` saying the optimizer had an empty parameter list because I hadn't defined any layers yet. To fix it, I implemented the __init__ with the correct input dimension. Since the PCAM images are 96 x 96 with 3 channels, I calculated 96 x 96 x 3 = 27,648 as the input size. I used `nn.Flatten()` to make sure the image fits into the first linear layer, and once I added the forward method to pass the data through self.layers, the tests passed perfectly.
 2. **Weight Updates:**  
    Checking test_backprop explicitly is really important because just seeing the loss go down isn't enough proof that the model is actually 'learning.' A loss can change just because of random noise, but test_backprop proves that the gradients are actually flowing back and updating the weights. It's basically a health check for the brain of the model to make sure the training signal is actually reaching the layers.
 
 3. **Test Output:**  
-    python3 -m pytest tests/test_mlp.py
-    ============================================================================================= test session starts ==============================================================================================
-    platform linux -- Python 3.9.21, pytest-8.4.2, pluggy-1.6.0
-    rootdir: /gpfs/home3/scur2397/MLOps_Assignment
-    configfile: pyproject.toml
-    collected 2 items                                                                                                                                                                                              
+```bash
+python3 -m pytest tests/test_mlp.py
+============================================================================================= test session starts ==============================================================================================
+platform linux -- Python 3.9.21, pytest-8.4.2, pluggy-1.6.0
+rootdir: /gpfs/home3/scur2397/MLOps_Assignment
+configfile: pyproject.toml
+collected 2 items
 
-    tests/test_mlp.py ..                                                                                                                                                                                     [100%]
+tests/test_mlp.py ..                                                                 [100%]
 
-    ============================================================================================== 2 passed in 8.22s ===============================================================================================
-
+============================================================================================== 2 passed in 8.22s ===============================================================================================
+```
 ---
+
 
 ## Question 9: Training Loop & Loss Visualization
 1. **Training Execution:**  
-    I trained the model by submitting a Slurm batch job to the gpu_a100 partition (this is the partition where the GPUs actually live). I trained for 3 epochs, and the job ran on compute node:
+    I trained the model by submitting a Slurm batch job to the gpu_a100 partition (this is the partition where the GPUs actually live (also I realised later I shouldnt have used the gpu_a100 partition, my sincere appologies once again). I trained for 3 epochs, and the job ran on compute node:
 
     Node: gcn26
     Confirmed in the job output header:
@@ -254,7 +257,7 @@ When I first tested the connection, I got a host authenticity warning for github
     The most frustrating error I encountered while trying to get the training loop to finish was a non-finite (NaN) loss during training, which caused the training to either silently stall or crash early in the first epoch.
 
     The error message I eventually forced the training loop to raise was:
-    RuntimeError: Non-finite loss detected: nan
+    `RuntimeError: Non-finite loss detected: nan`
 
     Before adding this explicit check, the job would sometimes print:
     Epoch 1: Train_Loss=nan, Val_Loss=nan
